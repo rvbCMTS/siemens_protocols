@@ -20,7 +20,7 @@ FROM OGP
 INNER JOIN BodyPart ON BodyPart.Id = OGP.Id_bodypart
 INNER JOIN OGP_kV  ON OGP_kV.ID = OGP.ID_kV
 INNER JOIN RAD_OGP ON RAD_OGP.ID = OGP.ID
-INNER JOIN RADOGP_mAs ON RAD_OGP.Id_mas = RADOGP_mAs.Id
+LEFT OUTER JOIN RADOGP_mAs ON RAD_OGP.Id_mas = RADOGP_mAs.Id
 INNER JOIN Technique ON RAD_OGP.Id_technique = Technique.Id
 INNER JOIN FilterType ON OGP.Id_filtertype = FilterType.Id
 INNER JOIN Focus ON OGP.Id_focus = Focus.Id
