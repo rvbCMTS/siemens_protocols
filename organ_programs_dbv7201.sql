@@ -1,5 +1,8 @@
 SELECT 	OGP.Name AS ris_name,
-		Exam.Name AS exam_name,
+        CASE
+            WHEN Exam.name IS NOT NULL THEN Exam.Name
+            ELSE Exam2.name
+        END AS exam_name,
 		BodyPart.Name AS body_part,
 		AcquisitionSystem.Name AS acquisition_system,
 		Technique.Value AS technique,
@@ -18,11 +21,17 @@ SELECT 	OGP.Name AS ris_name,
 		RAD_OGP.ImageAmplification AS image_amplification_gain,
 		Dose_RAD.Sensitivity AS sensitivity,
 		GradationParameter.Name AS lut,
-		FPSet.Name AS fp_set
+		FPSet.Name AS fp_set,
+        EXI_Parameter.Name AS exi_name,
+        EXI_Parameter.TargetEXI as exi_target
 FROM OGP
 
-INNER JOIN Exam_OGP ON OGP.Id = Exam_OGP.Id_ogp
-INNER JOIN Exam ON Exam.Id = Exam_OGP.Id_exam
+
+LEFT OUTER JOIN Exam_OGP ON OGP.Id = Exam_OGP.Id_ogp
+LEFT OUTER JOIN Exam ON Exam.Id = Exam_OGP.Id_exam
+LEFT OUTER JOIN AlternativeOGP on OGP.ID = AlternativeOGP.id_alternativeogp
+LEFT OUTER JOIN Exam_OGP AS eogp ON AlternativeOGP.ID_OGP = eogp.id_ogp
+LEFT OUTER JOIN Exam AS Exam2 ON eogp.id_exam = Exam2.id
 INNER JOIN BodyPart ON BodyPart.Id = OGP.Id_bodypart
 INNER JOIN AcquisitionSystem ON AcquisitionSystem.Id = OGP.Id_acqsystem
 INNER JOIN OGP_kV  ON OGP_kV.ID = OGP.ID_kV
@@ -38,6 +47,7 @@ INNER JOIN HarmonisKernel ON SpatialFrequencyParameter.Id_harmoniskernel = Harmo
 INNER JOIN Dose_RAD ON RAD_OGP.Id_dose = Dose_RAD.Id
 INNER JOIN GradationParameter ON RAD_OGP.Id_imagegradation = GradationParameter.Ids
 LEFT OUTER JOIN FPSet ON FPset.ID = OGP.ID_FPSet
+INNER JOIN EXI_Parameter on RAD_OGP.ID_EXI_Parameter = EXI_Parameter.Id
 
 
 WHERE
@@ -46,5 +56,6 @@ AND OGP.Type='SIEMENSDEFAULT'
 AND ris_name NOT LIKE '-%'
 AND ris_name NOT LIKE '. _%'
 AND ris_name NOT LIKE '%\_%' ESCAPE '\'
+AND Exam_name NOT NULL
 
 ORDER BY exam_name ;
