@@ -2,7 +2,7 @@ import sqlite3
 import pandas
 from pathlib import Path
 
-def parse_pex_db(path_to_db):
+def parse_db(path_to_db):
     # Open database
     with sqlite3.connect(path_to_db) as conn:
 

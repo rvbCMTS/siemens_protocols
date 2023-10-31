@@ -1,4 +1,4 @@
-from parse_pex_db import parse_pex_db
+from parse_db import parse_db
 import sys
 from zipfile import ZipFile
 from pathlib import Path
@@ -29,8 +29,8 @@ def main(input_directory: Path):
     sqlites: list[Path] = _find_files_of_specified_type_recursively(input_directory, '.sqlite')
     for sqlite in sqlites:
         print(sqlite)
-        # parse temporary sqlite database
-        df = parse_pex_db(sqlite)
+        # parse sqlite database
+        df = parse_db(sqlite)
 
         # save dataframe as csv
         df.to_csv(sqlite.with_suffix('.csv'))
