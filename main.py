@@ -1,32 +1,42 @@
 from parse_pex_db import parse_pex_db
-import os
 import sys
 from zipfile import ZipFile
+from pathlib import Path
 
-# input_directory from command line
-input_directory = sys.argv[1]
-print(f'input_directory: {input_directory}')
 
-# find all .zip in input_directory
-for root, dirs, files in os.walk(input_directory):
-    for file in files:
-        if file.lower().endswith(".zip"):
-            # open zip
-            with ZipFile(os.path.join(root, file), 'r') as z:
-                # list of zips with .sqlite file
-                file_name = [s for s in z.namelist() if '.sqlite' in s]
-                z.extract(file_name[0], root)
+def _find_files_of_specified_type_recursively(input_directory: Path, file_type: str) -> list[Path]:
+    dbs: list[Path] = [
+        filepath
+        for filepath in input_directory.rglob("*")
+        if filepath.suffix == file_type
+    ]
+    return dbs
 
-# find all .sqlite in input_directory
-for root, dirs, files in os.walk(input_directory):
-    for file in files:
-        if file.lower().endswith(".sqlite"):
-                print(file)
-                # parse temporary sqlite database
-                df = parse_pex_db(os.path.join(root, file))
 
-                # save dataframe as csv
-                [pre, ext] = os.path.splitext(file)
-                csv_path = os.path.join(root, pre + ".csv")
-                df.to_csv(csv_path)
+def main(input_directory: Path):
+    print(f'input_directory: {input_directory}')
 
+    # find all .zip in input_directory
+    zips: list[Path] = _find_files_of_specified_type_recursively(input_directory, '.zip')
+    for zip in zips:
+        # open zipYe
+        with ZipFile(zip, 'r') as z:
+            # list of zips with .sqlite file
+            file_name = [s for s in z.namelist() if '.sqlite' in s]
+            z.extract(file_name[0], zip.parent)
+
+    # find all .sqlite in input_directory
+    sqlites: list[Path] = _find_files_of_specified_type_recursively(input_directory, '.sqlite')
+    for sqlite in sqlites:
+        print(sqlite)
+        # parse temporary sqlite database
+        df = parse_pex_db(sqlite)
+
+        # save dataframe as csv
+        df.to_csv(sqlite.with_suffix('.csv'))
+
+
+if __name__ == "__main__":
+    main(
+        input_directory=Path(sys.argv[1]),
+    )
