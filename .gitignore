@@ -1,0 +1,11 @@
+
+.idea/
+
+main.build/
+
+main.dist/
+
+main.onefile-build/
+
+*.sqlite
+SiemensProtocols.exe
