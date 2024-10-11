@@ -23,7 +23,8 @@ def main(input_directory: Path):
         with ZipFile(zip, 'r') as z:
             # list of zips with .sqlite file
             file_name = [s for s in z.namelist() if '.sqlite' in s]
-            z.extract(file_name[0], zip.parent)
+            if len(file_name) > 0:
+                z.extract(file_name[0], zip.parent)
 
     # find all .sqlite in input_directory
     sqlites: list[Path] = _find_files_of_specified_type_recursively(input_directory, '.sqlite')
@@ -33,7 +34,7 @@ def main(input_directory: Path):
         df = parse_db(sqlite)
 
         # save dataframe as csv
-        df.to_csv(sqlite.with_suffix('.csv'))
+        df.to_csv(sqlite.with_suffix('.csv'), sep=";", decimal=",", encoding='latin1')
 
 
 if __name__ == "__main__":

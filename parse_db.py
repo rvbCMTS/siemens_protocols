@@ -34,7 +34,7 @@ def parse_db(path_to_db):
                 df = pandas.read_sql_query(Path('organ_programs_dbv60.sql').read_text(), conn)
             elif 72.01 <= db_version < 74.06:
                 df = pandas.read_sql_query(Path('organ_programs_dbv7201.sql').read_text(), conn)
-            elif 74.06 <= db_version:
+            elif 74.07 <= db_version:
                 df = pandas.read_sql_query(Path('organ_programs_dbv7406.sql').read_text(), conn)
 
         if 'Triplet' in tables:

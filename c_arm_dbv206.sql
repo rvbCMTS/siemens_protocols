@@ -1,4 +1,7 @@
-SELECT Application.name as Application,
+SELECT ApplicationGroup.name AS ApplicationGroup,
+       ApplicationGroup.IsDefault AS ApplicationGroupIsDefault,
+       ApplicationGroup_Application.OrderApplication,
+       Application.name as Application,
        Application.Rotation,
        Application.EdgeEnhancementHigh,
        Application.EdgeEnhancementLow,
@@ -32,7 +35,7 @@ SELECT Application.name as Application,
        TripletElement.DoseLevel,
        TripletElement.DoseRateIndex,
        TripletElement.NumImages,
-       TripletElement.IsDefault,
+       TripletElement.IsDefault AS TripletIsDefault,
        FluoroCurve.Name as FluoroCurve,
        FluoroCurve.IsHigh,
        NoiseSpatialFilterParameter.Name as NoiseSpatialFilterParameter,
@@ -54,6 +57,8 @@ SELECT Application.name as Application,
        BasicRecoSet.Name AS BasicRecoSet
 from Application
 
+JOIN ApplicationGroup_Application ON ApplicationGroup_Application.ID_Application=Application.ID
+JOIN ApplicationGroup ON ApplicationGroup.ID=ApplicationGroup_Application.ID_ApplicationGroup
 JOIN AcquisitionModeConfig on Application.ID_AcqModeConfigFluoro=AcquisitionModeConfig.ID
 JOIN Triplet on AcquisitionModeConfig.ID_Triplet=Triplet.ID
 JOIN TripletElement on TripletElement.ID_Triplet=Triplet.ID
