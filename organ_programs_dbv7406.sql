@@ -8,6 +8,9 @@ SELECT 	OGP.Name AS ris_name,
 		Technique.Value AS technique,
 		CAST(OGP_kV.Value AS float)/10 AS kv,
 		CAST(OGP_mAs.Value AS float)/100 AS mas,
+		CAST(OGP_ms.Value AS float)/10 AS ms,
+		Dose_RAD.Dose AS aec_dose_level,
+		SDMDominant.Name AS aec_dominant,
 		FilterType.Name AS filter_cu,
 		Focus.Name AS focus,
 		OGP.Grid AS grid,
@@ -19,7 +22,6 @@ SELECT 	OGP.Name AS ris_name,
 		SpatialFrequencyParameter.Noisereduction AS noise_reduction,
 		RAD_OGP.Imageautoamplification AS image_auto_amplification,
 		RAD_OGP.ImageAmplification AS image_amplification_gain,
-		Dose_RAD.Sensitivity AS sensitivity,
 		GradationParameter.Name AS lut,
 		FPSet.Name AS fp_set,
         EXI_Parameter.Name AS exi_name,
@@ -36,14 +38,16 @@ INNER JOIN AcquisitionSystem ON AcquisitionSystem.Id = OGP.Id_acqsystem
 INNER JOIN OGP_kV  ON OGP_kV.ID = OGP.ID_kV
 INNER JOIN RAD_OGP ON RAD_OGP.ID = OGP.ID
 LEFT OUTER JOIN OGP_mAs ON RAD_OGP.Id_mas = OGP_mAs.Id
+LEFT OUTER JOIN OGP_ms ON RAD_OGP.Id_ms = OGP_ms.Id
 INNER JOIN Technique ON RAD_OGP.Id_technique = Technique.Id
+INNER JOIN Dose_RAD ON RAD_OGP.ID_dose = Dose_RAD.Id
+LEFT OUTER JOIN SDMDominant ON OGP.ID_SDMDominant = SDMDominant.Id
 INNER JOIN FilterType ON OGP.Id_filtertype = FilterType.Id
 INNER JOIN Focus ON OGP.Id_focus = Focus.Id
 INNER JOIN SpatialFrequencyParameter ON OGP.Id_imaspatialfreqparam = SpatialFrequencyParameter.Id
 INNER JOIN DiamondViewID ON SpatialFrequencyParameter.Id_diamondviewid = DiamondViewID.Id
 INNER JOIN EdgeFilterKernel ON SpatialFrequencyParameter.Id_edgefilterkernel = EdgeFilterKernel.Id
 INNER JOIN HarmonisKernel ON SpatialFrequencyParameter.Id_harmoniskernel = HarmonisKernel.Id
-INNER JOIN Dose_RAD ON RAD_OGP.Id_dose = Dose_RAD.Id
 INNER JOIN GradationParameter ON RAD_OGP.Id_imagegradation = GradationParameter.Ids
 LEFT OUTER JOIN FPSet ON FPset.ID = OGP.ID_FPSet
 INNER JOIN EXI_Parameter on RAD_OGP.ID_EXI_Parameter = EXI_Parameter.Id
