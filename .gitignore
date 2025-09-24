@@ -9,3 +9,8 @@ main.onefile-build/
 
 *.sqlite
 SiemensProtocols.exe
+
+.vscode/
+__pycache__/
+
+.venv/
