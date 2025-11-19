@@ -3,11 +3,16 @@ SELECT 	OGP.Name AS ris_name,
             WHEN Exam.name IS NOT NULL THEN Exam.Name
             ELSE Exam2.name
         END AS exam_name,
+		StandPosition.Name AS stand_position,
 		BodyPart.Name AS body_part,
 		AcquisitionSystem.Name AS acquisition_system,
 		Technique.Value AS technique,
 		CAST(OGP_kV.Value AS float)/10 AS kv,
 		CAST(RADOGP_mAs.Value AS float)/100 AS mas,
+		CAST(RADOGP_ms.Value AS float)/10 AS ms,
+		Dose_RAD.Dose AS aec_dose_level,
+		SDMDominant.Name AS aec_dominant,
+		RAD_OGP.ExposureCorrection AS aec_exposure_correction,
 		FilterType.Name AS filter_cu,
 		Focus.Name AS focus,
 		OGP.Grid AS grid,
@@ -19,7 +24,6 @@ SELECT 	OGP.Name AS ris_name,
 		SpatialFrequencyParameter.Noisereduction AS noise_reduction,
 		RAD_OGP.Imageautoamplification AS image_auto_amplification,
 		RAD_OGP.ImageAmplification AS image_amplification_gain,
-		Dose_RAD.Sensitivity AS sensitivity,
 		GradationParameter.Name AS lut,
 		FPSet.Name AS fp_set,
         EXI_Parameter.Name AS exi_name,
@@ -37,6 +41,8 @@ INNER JOIN AcquisitionSystem ON AcquisitionSystem.Id = OGP.Id_acqsystem
 INNER JOIN OGP_kV  ON OGP_kV.ID = OGP.ID_kV
 INNER JOIN RAD_OGP ON RAD_OGP.ID = OGP.ID
 LEFT OUTER JOIN RADOGP_mAs ON RAD_OGP.Id_mas = RADOGP_mAs.Id
+LEFT OUTER JOIN RADOGP_ms ON RAD_OGP.ID_ms = RADOGP_ms.Id
+LEFT OUTER JOIN SDMDominant ON OGP.ID_SDMDominant = SDMDominant.Id
 INNER JOIN Technique ON RAD_OGP.Id_technique = Technique.Id
 INNER JOIN FilterType ON OGP.Id_filtertype = FilterType.Id
 INNER JOIN Focus ON OGP.Id_focus = Focus.Id
@@ -48,6 +54,7 @@ INNER JOIN Dose_RAD ON RAD_OGP.Id_dose = Dose_RAD.Id
 INNER JOIN GradationParameter ON RAD_OGP.Id_imagegradation = GradationParameter.Ids
 LEFT OUTER JOIN FPSet ON FPset.ID = OGP.ID_FPSet
 INNER JOIN EXI_Parameter on RAD_OGP.ID_EXI_Parameter = EXI_Parameter.Id
+LEFT OUTER JOIN StandPosition on OGP.ID_StandPosition = StandPosition.ID
 
 
 WHERE
