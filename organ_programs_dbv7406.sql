@@ -3,6 +3,7 @@ SELECT 	OGP.Name AS ris_name,
             WHEN Exam.name IS NOT NULL THEN Exam.Name
             ELSE Exam2.name
         END AS exam_name,
+		StandPosition.Name AS stand_position,
 		BodyPart.Name AS body_part,
 		AcquisitionSystem.Name AS acquisition_system,
 		Technique.Value AS technique,
@@ -11,6 +12,7 @@ SELECT 	OGP.Name AS ris_name,
 		CAST(OGP_ms.Value AS float)/10 AS ms,
 		Dose_RAD.Dose AS aec_dose_level,
 		SDMDominant.Name AS aec_dominant,
+		RAD_OGP.ExposureCorrection AS aec_exposure_correction,
 		FilterType.Name AS filter_cu,
 		Focus.Name AS focus,
 		OGP.Grid AS grid,
@@ -50,7 +52,9 @@ INNER JOIN EdgeFilterKernel ON SpatialFrequencyParameter.Id_edgefilterkernel = E
 INNER JOIN HarmonisKernel ON SpatialFrequencyParameter.Id_harmoniskernel = HarmonisKernel.Id
 INNER JOIN GradationParameter ON RAD_OGP.Id_imagegradation = GradationParameter.Ids
 LEFT OUTER JOIN FPSet ON FPset.ID = OGP.ID_FPSet
-INNER JOIN EXI_Parameter on RAD_OGP.ID_EXI_Parameter = EXI_Parameter.Id
+LEFT OUTER JOIN EXI_Parameter on RAD_OGP.ID_EXI_Parameter = EXI_Parameter.Id
+LEFT OUTER JOIN StandPosition on OGP.ID_StandPosition = StandPosition.ID
+
 
 WHERE
 OGP.status=2
