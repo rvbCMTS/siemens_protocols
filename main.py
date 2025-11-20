@@ -31,11 +31,11 @@ def main(input_directory: Path):
     for sqlite in sqlites:
         print(sqlite)
         # parse sqlite database
-        df = parse_db(sqlite)
+        df, sfp = parse_db(sqlite)
 
         # save dataframe as csv
         df.to_csv(sqlite.with_suffix('.csv'), sep=";", decimal=",", encoding='latin1')
-
+        sfp.to_csv(sqlite.with_name(sqlite.stem + '_sfp').with_suffix('.csv'), sep=";", decimal=",", encoding='latin1')
 
 if __name__ == "__main__":
     main(
