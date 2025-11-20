@@ -36,10 +36,16 @@ def parse_db(path_to_db):
                 df = pandas.read_sql_query(Path('organ_programs_dbv7201.sql').read_text(), conn)
             elif 74.07 <= db_version:
                 df = pandas.read_sql_query(Path('organ_programs_dbv7406.sql').read_text(), conn)
+            
+            # Spatial frequency parameters
+            sfp = pandas.read_sql_query(Path('spatial_frequency_parameter_dbv7201.sql').read_text(), conn)
 
         if 'Triplet' in tables:
             if 20.6 <= db_version:
                 df = pandas.read_sql_query(Path('c_arm_dbv206.sql').read_text(), conn)
+            
+           # Spatial frequency parameters
+            sfp = pandas.DataFrame()
 
         df['modified'] = modified
-    return df
+    return df, sfp
